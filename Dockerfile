@@ -1,8 +1,8 @@
 FROM centos:7
 MAINTAINER "DataDog" <info@datadog.lt>
 
-ENV USER_GUID=1000
-ENV USER_UID=1000
+ENV USER_GUID 1000
+ENV USER_UID 1000
 
 # Run updates
 RUN yum -y update; yum clean all;
