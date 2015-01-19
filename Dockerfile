@@ -1,6 +1,9 @@
 FROM centos:7
 MAINTAINER "DataDog" <info@datadog.lt>
 
+ENV USER_GUID=1000
+ENV USER_UID=1000
+
 # Run updates
 RUN yum -y update; yum clean all;
 
@@ -37,8 +40,13 @@ RUN yum -y install --enablerepo=remi,remi-php56 php-fpm php-mcrypt php-mysqlnd p
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Add www user
-RUN groupadd www -g 1000
-RUN useradd www -g 1000 -u 1000 -p changeme
+RUN groupadd www -g ${USER_GUID}
+RUN useradd www -g ${USER_GUID} -u ${USER_UID} -p changeme
+
+# Enable sudo with no passwd
+RUN groupadd sudo
+RUN echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN gpasswd -a www sudo
 
 # Copy configs
 COPY php/www.conf /etc/php-fpm.d/www.conf
