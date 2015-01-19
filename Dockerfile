@@ -38,7 +38,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 
 # Add www user
 RUN groupadd www -g 1000
-RUN useradd www -g 1000 -u 1000
+RUN useradd www -g 1000 -u 1000 -p changeme
 
 # Copy configs
 COPY php/www.conf /etc/php-fpm.d/www.conf
