@@ -44,6 +44,7 @@ RUN groupadd www -g ${USER_GUID}
 RUN useradd www -g ${USER_GUID} -u ${USER_UID} -p changeme
 
 # Enable sudo with no passwd
+RUN yum install -y sudo
 RUN groupadd sudo
 RUN echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN gpasswd -a www sudo
