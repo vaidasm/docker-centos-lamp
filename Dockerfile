@@ -22,6 +22,8 @@ RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && echo 'root:datado
 # Install nginx
 COPY nginx/nginx.repo /etc/yum.repos.d/nginx.repo
 RUN yum -y install nginx --enablerepo=nginx;
+RUN mkdir /etc/sites-enabled
+RUN mkdir /etc/sites-available
 
 # Install MySQL
 RUN yum -y install http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm;
@@ -36,6 +38,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 
 # Copy configs
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/default.conf /etc/nginx/sites-available/default.conf
+RUN ln /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+
 COPY supervisor/*.ini /etc/supervisord.d/
 
 COPY mysql/mysql_start.sh /usr/local/bin/mysql_start.sh

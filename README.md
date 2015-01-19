@@ -19,7 +19,17 @@ To run this container:
         lamp
     
 ## Use it with Vagrant
-Sample Vagrant file:
+You can use this image with vagrant. To do that:
+
+    mkdir docker
+    echo "FROM centos:7" > docker/Dockerfile
+    echo "#!/bin/bash" > docker/init.sh
+    
+To run start box:
+
+    vagrant up --provider=docker
+    
+Vagrant file:
 ```
 VAGRANTFILE_API_VERSION = "2"
 
@@ -34,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define 'default' do |default|
-    default.vm.hostname = 'mxize'
+    default.vm.hostname = 'lamp'
   end
 
   # SSH Configs
@@ -55,4 +65,3 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 end
 ```
-
