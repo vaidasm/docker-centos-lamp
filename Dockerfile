@@ -17,13 +17,13 @@ RUN echo 'files = /etc/supervisord.d/*.ini' >> /etc/supervisord.conf
 # Install and setup sshd
 RUN yum install -y openssh-server openssh-clients passwd
 RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
-RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && echo 'root:datadog' | chpasswd
+RUN sed -ri 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && echo 'root:changeme' | chpasswd
 
 # Install nginx
 COPY nginx/nginx.repo /etc/yum.repos.d/nginx.repo
 RUN yum -y install nginx --enablerepo=nginx;
-RUN mkdir /etc/sites-enabled
-RUN mkdir /etc/sites-available
+RUN mkdir /etc/nginx/sites-available
+RUN mkdir /etc/nginx/sites-enabled
 
 # Install MySQL
 RUN yum -y install http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm;
@@ -36,16 +36,23 @@ RUN yum -y install --enablerepo=remi,remi-php56 php-fpm php-mcrypt php-mysqlnd p
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
+# Add www user
+RUN groupadd www -g 1000
+RUN useradd www -g 1000 -u 1000
+
 # Copy configs
+COPY php/www.conf /etc/php-fpm.d/www.conf
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/default.conf /etc/nginx/sites-available/default.conf
-RUN ln /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
+RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
 COPY supervisor/*.ini /etc/supervisord.d/
 
 COPY mysql/mysql_start.sh /usr/local/bin/mysql_start.sh
 RUN chmod +x /usr/local/bin/mysql_start.sh
 COPY mysql/my.cnf /etc/my.cnf
+
+RUN chown -R www:www /etc/nginx /var/lib/mysql /var/www /var/lib/php/session
 
 VOLUME /var/www /var/log/shared /var/lib/mysql
 EXPOSE 22 80 3306
