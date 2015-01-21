@@ -41,7 +41,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 
 # Add www user
 RUN groupadd www -g ${USER_GUID}
-RUN useradd www -g ${USER_GUID} -u ${USER_UID}
+RUN useradd www -g ${USER_GUID} -u ${USER_UID} -d /var/www
 RUN echo 'www:changeme' | chpasswd
 
 # Enable sudo with no passwd

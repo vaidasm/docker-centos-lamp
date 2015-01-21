@@ -4,7 +4,7 @@ Based on centos7.
 Building this container:
 
     docker build -t lamp .
-    
+
 To run this container:
 
     docker run \
