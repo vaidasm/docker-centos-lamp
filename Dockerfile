@@ -36,12 +36,15 @@ RUN yum -y install mysql-community-server;
 RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 RUN yum -y install --enablerepo=remi,remi-php56 php-fpm php-mcrypt php-mysqlnd php-mbstring
 
+# Install GIT
+RUN yum -y install git
+
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Add www user
 RUN groupadd www -g ${USER_GUID}
-RUN useradd www -g ${USER_GUID} -u ${USER_UID} -d /var/www
+RUN useradd www -g ${USER_GUID} -u ${USER_UID}
 RUN echo 'www:changeme' | chpasswd
 
 # Enable sudo with no passwd
